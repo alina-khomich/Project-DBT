@@ -91,4 +91,4 @@ left join unique_airplains uap on uap.airport = s.airport and s.unique_flight_da
 left join unique_airline ual on ual.airport = s.airport and s.unique_flight_date = ual.unique_flight_date
 left join prep_airports on faa = s.airport
 left join prep_weather_daily prep on prep.airport_code= s.airport and prep."date" = s.unique_flight_date
-order  by s.airport;
+order  by s.airport

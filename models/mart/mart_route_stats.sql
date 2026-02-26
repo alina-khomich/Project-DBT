@@ -76,4 +76,4 @@ join diverted using (airport)
 join unique_airplains using (airport)
 join unique_airline using (airport)
 join prep_airports on faa = airport
-order  by s.airport;
+order by s.airport
