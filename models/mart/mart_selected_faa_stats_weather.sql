@@ -89,6 +89,6 @@ left join canseled c on c.airport = s.airport and s.unique_flight_date = c.uniqu
 left join diverted div on div.airport = s.airport and s.unique_flight_date = div.unique_flight_date
 left join unique_airplains uap on uap.airport = s.airport and s.unique_flight_date = uap.unique_flight_date
 left join unique_airline ual on ual.airport = s.airport and s.unique_flight_date = ual.unique_flight_date
-left join prep_airports on faa = s.airport
-left join prep_weather_daily prep on prep.airport_code= s.airport and prep."date" = s.unique_flight_date
+left join {{ref('prep_airports')}} on faa = s.airport
+left join {{ref('prep_weather_daily')}} prep on prep.airport_code= s.airport and prep."date" = s.unique_flight_date
 order  by s.airport
