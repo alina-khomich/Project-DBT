@@ -1,64 +1,64 @@
 with 
 departures as (
-	select origin,flight_date::date as unique_flight_date, count (*) as departure_total from  prep_flights
+	select origin,flight_date::date as unique_flight_date, count (*) as departure_total from  {{ref('prep_flights')}}
 	where origin in ('JFK', 'LAX', 'MIA') and cancelled = 0
 	group by origin,unique_flight_date),
 arrivals as (
-	select dest,flight_date::date as unique_flight_date, count (*) as arrival_total from  prep_flights
+	select dest,flight_date::date as unique_flight_date, count (*) as arrival_total from  {{ref('prep_flights')}}
 	where dest in ('JFK', 'LAX', 'MIA') and cancelled = 0
 	group by dest,unique_flight_date), 
 scheduled as (
 	select airport, unique_flight_date, count(*) as schedulled_flights
 	from 
 		(select origin as airport,flight_date::date as unique_flight_date
-		 from prep_flights
+		 from {{ref('prep_flights')}}
 		 where origin in ('JFK','LAX','MIA')
 		 union all
 		 select dest as airport, flight_date::date as unique_flight_date
-		 from prep_flights
+		 from {{ref('prep_flights')}}
 		 where dest in ('JFK','LAX','MIA')) as t
 	group by airport,unique_flight_date),
 canseled as (
 	select airport, unique_flight_date, count(*) as canseled_flights
 	from 
 		(select origin as airport,flight_date::date as unique_flight_date
-		  from prep_flights
+		  from {{ref('prep_flights')}}
 		  where origin in ('JFK','LAX','MIA') and cancelled = 1
 		  union all
 		  select dest as airport,flight_date::date as unique_flight_date
-		  from prep_flights
+		  from {{ref('prep_flights')}}
 		  where dest in ('JFK','LAX','MIA') and cancelled = 1) as t
 		group by airport,unique_flight_date),
 diverted as (
 	select airport,unique_flight_date, count(*) as diverted_flights
 	from
 		(select origin as airport,flight_date::date as unique_flight_date
-		  from prep_flights
+		  from {{ref('prep_flights')}}
 		  where origin in ('JFK','LAX','MIA') and diverted = 1
 		  union all
 		  select dest as airport,flight_date::date as unique_flight_date
-		  from prep_flights
+		  from {{ref('prep_flights')}}
 		  where dest in ('JFK','LAX','MIA') and diverted = 1) as t
 	group by airport,unique_flight_date),
 unique_airplains as (
 	select t.airport, unique_flight_date,avg(unique_airplains)  as avg_unique_airplains
 	from 
-		(select origin as airport,flight_date::date as unique_flight_date, count( distinct tail_number) as unique_airplains from prep_flights
+		(select origin as airport,flight_date::date as unique_flight_date, count( distinct tail_number) as unique_airplains from {{ref('prep_flights')}}
 		where origin in ('JFK','LAX','MIA')
 		group by airport,unique_flight_date
 		union all
-		select dest as airport,flight_date::date as unique_flight_date, count( distinct tail_number) as unique_airplains from prep_flights
+		select dest as airport,flight_date::date as unique_flight_date, count( distinct tail_number) as unique_airplains from {{ref('prep_flights')}}
 		where dest in ('JFK','LAX','MIA')
 		group by airport,unique_flight_date) as t
 	group by t.airport,unique_flight_date),
 unique_airline as (
 	select airport,unique_flight_date, avg(unique_airline)  as avg_unique_airline
 	from 
-		(select origin as airport,flight_date::date as unique_flight_date, count( distinct airline) as unique_airline from prep_flights
+		(select origin as airport,flight_date::date as unique_flight_date, count( distinct airline) as unique_airline from {{ref('prep_flights')}}
 		where origin in ('JFK','LAX','MIA')
 		group by airport,unique_flight_date
 		union all
-		select dest as airport,flight_date::date as unique_flight_date, count( distinct airline) as unique_airline from prep_flights
+		select dest as airport,flight_date::date as unique_flight_date, count( distinct airline) as unique_airline from {{ref('prep_flights')}}
 		where dest in ('JFK','LAX','MIA')
 		group by airport,unique_flight_date) as t
 	group  by airport,unique_flight_date)

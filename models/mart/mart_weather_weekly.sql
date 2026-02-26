@@ -11,6 +11,6 @@ with weather_weekly as (
 		round(avg(wind_peakgust_kmh),2) as wind_peakgust_kmh,
 		round(avg(avg_pressure_hpa),2) as avg_pressure_hpa,
 		round(avg(sun_minutes),2) as sun_minutes
-	from prep_weather_daily
+	from {{ref('prep_weather_daily')}}
 	group by trunc_week)
 select * from weather_weekly
